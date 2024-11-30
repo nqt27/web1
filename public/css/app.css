@@ -1,0 +1,117 @@
+#back-to-top {
+    width: 40px;
+    height: 40px;
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    background: linear-gradient(135deg, #6e8efb, #a777e3); /* Gradient color */
+    color: white;
+    border: none;
+    border-radius: 50%;
+    font-size: 15px;
+    cursor: pointer;
+    display: none; /* Hidden by default */
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.3); /* Drop shadow */
+    transition: all 0.3s ease;
+    z-index: 1000; /* Make sure it stays on top */
+}
+
+#back-to-top.show {
+    display: block; /* Show when scrolling */
+    opacity: 1;
+}
+
+#back-to-top:hover {
+    transform: scale(1.1); /* Slightly increase size when hovered */
+    background: linear-gradient(
+        135deg,
+        #a777e3,
+        #6e8efb
+    ); /* Reverse gradient on hover */
+    box-shadow: 0px 6px 12px rgba(0, 0, 0, 0.5); /* Darker shadow on hover */
+}
+
+/* Font Awesome Icon */
+#back-to-top i {
+    pointer-events: none; /* Disable pointer events on the icon */
+}
+
+header {
+    background-color: rgba(0, 0, 0, 0);
+    position: fixed;
+    width: 100%;
+    z-index: 999;
+    transition: background-color 0.5s ease;
+}
+.header {
+    display: flex;
+    /* position: fixed; */
+}
+.header nav {
+    background-color: rgba(0, 0, 0, 0) !important;
+    width: 100%;
+}
+.header nav a {
+    color: white !important;
+}
+.header nav ul {
+    width: 75%;
+    justify-content: center;
+}
+.logo img {
+    width: 64px;
+    border-radius: 10px;
+}
+.banner {
+    background-color: #27403e;
+    height: 865px;
+}
+.banner1 {
+    display: flex;
+}
+.banner-left {
+    width: 50%;
+    height: 900px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    z-index: 999;
+}
+.banner-left > * {
+    margin: 15px;
+}
+.banner-title {
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+        Roboto, Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue",
+        sans-serif;
+    font-size: 50px;
+    font-weight: 700;
+    color: white;
+    text-transform: uppercase;
+    line-height: 60px;
+}
+.banner-content {
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+        Roboto, Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue",
+        sans-serif;
+    font-size: 18px;
+    font-weight: 400;
+    color: white;
+    line-height: 24px;
+}
+.banner-right {
+    width: 50%;
+    display: flex;
+    align-items: center;
+}
+.banner1 > * {
+    margin: 25px;
+}
+.banner-video {
+    position: absolute;
+    transition: opacity 0.5s ease;
+}
+#banner-video.hidden {
+    opacity: 0; /* Hide the video smoothly */
+    pointer-events: none; /* Prevent interaction when hidden */
+}

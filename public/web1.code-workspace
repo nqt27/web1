@@ -1,0 +1,14 @@
+{
+	"folders": [
+		{
+			"path": ".."
+		},
+		{
+			"path": "../../beagle-dashboard"
+		},
+		{
+			"path": "../../ecommerce"
+		}
+	],
+	"settings": {}
+}
