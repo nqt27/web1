@@ -12,19 +12,17 @@ class ProductController extends Controller
 {
     public function index()
     {
-        $parentMenu = Menu::where('name', 'Sản phẩm')->first(); // Lấy menu cha có tên 'Sản phẩm'
-
-        $menu = Menu::where('parent_id', $parentMenu->id)  // Lọc menu con của menu cha 'Sản phẩm'
-            ->get();
+        $menu = Menu::all(); //
         $products = Products::all();
         return view('admin.product',  ['products' => $products, 'menu' => $menu]);
     }
     public function add()
     {
-        $parentMenu = Menu::where('name', 'Sản phẩm')->first(); // Lấy menu cha có tên 'Sản phẩm'
-
-        $menu = Menu::where('parent_id', $parentMenu->id)  // Lọc menu con của menu cha 'Sản phẩm'
+        $menu = Menu::with('submenu') // Lấy menu cha
+            ->whereNull('parent_id') // Lấy luôn menu con
+            ->orderBy('position') // Sắp xếp theo vị trí
             ->get();
+
         return view('admin.add-product', ['menu' => $menu]);
     }
     public function store(Request $request)

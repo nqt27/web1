@@ -2,7 +2,7 @@
 
 <div class="be-content">
     <div class="page-head">
-        <h2 class="page-head-title">Danh mục sản phẩm</h2>
+        <h2 class="page-head-title">Danh mục con của {{$menu->name}}</h2>
         <nav aria-label="breadcrumb" role="navigation">
             <ol class="breadcrumb page-head-nav">
                 <li class="breadcrumb-item"><a href="{{route('admin')}}">Admin</a></li>
@@ -18,14 +18,14 @@
                 <div id="column-1">
                     <div class="card">
                         <div class="card-header card-header-divider">
-                            <button class="btn btn-space btn-primary" id="btn-add-menu"><i class="icon icon-left mdi mdi-plus-circle"></i><span>Thêm menu</span></button>
+                            <button class="btn btn-space btn-primary" id="btn-add-submenu"><i class="icon icon-left mdi mdi-plus-circle"></i><span>Thêm menu</span></button>
                         </div>
 
                     </div>
-                    @foreach($menu as $m)
+                    @foreach($submenu as $m)
                     <div class="card">
                         <div class="card-header card-header-divider">{{$m->name}}
-                            <a href="/admin/submenu/{{$m->id}}" class="btn btn-space btn-primary btn-submenu" data-id="{{$m->id}}" data-name="{{$m->name}}" data-url="{{$m->url}}" type="button" style="float: right;"><i class="icon icon-left mdi mdi-view-list-alt"></i><span>Danh mục con</span></a>
+                            <button class="btn btn-space btn-primary btn-submenu" data-id="{{$m->id}}" data-name="{{$m->name}}" data-url="{{$m->url}}" type="button" style="float: right;"><i class="icon icon-left mdi mdi-view-list-alt"></i><span>Danh mục con</span></button>
                             <button class="btn btn-space btn-success edit-btn" data-id="{{$m->id}}" data-name="{{$m->name}}" data-url="{{$m->url}}" type="button" style="float: right;"><i class="icon icon-left mdi mdi-edit"></i><span>Sửa danh mục</span></button>
                             <button class="btn btn-space btn-danger delete-btn" data-id="{{$m->id}}" data-name="{{$m->name}}" data-url="{{$m->url}}" type="button" style="float: right;"><i class="icon icon-left mdi mdi-delete"></i><span>Xóa danh mục</span></button>
                         </div>
@@ -33,6 +33,7 @@
                     </div>
                     @endforeach
                 </div>
+
             </div>
         </div>
     </div>
@@ -78,93 +79,12 @@
 </script>
 @endif
 
-<!-- <script>
-    $(document).ready(function() {
-        $('#list-').nestable();
-        // Xử lý khi nhấn nút "Lưu thứ tự"
-        $(".dd").on('change', function() {
-            var parennt_id = $(this).data('id');
-
-            var order = $('#list-').nestable('serialize'); // Lấy thứ tự
-            console.log("Thứ tự mới:", order); // In ra thứ tự mới
-            $.ajax({
-                url: '/admin/updateOrder/' + parennt_id, // Đường dẫn đến API của bạn
-                method: 'POST',
-                data: {
-                    order: order, // Gửi mảng thứ tự mới
-                    _token: $('meta[name="csrf-token"]').attr('content') // CSRF token cho Laravel
-                },
-                success: function(response) {
-                    Swal.fire({
-                        title: "Saved",
-                        text: "Menu đã được lưu",
-                        icon: "success"
-                    });
-                    console.log("Thứ tự đã được cập nhật thành công:", response);
-                },
-                error: function(xhr) {
-                    Swal.fire({
-                        title: "Cancelled",
-                        text: "Menu chưa được lưu",
-                        icon: "error"
-                    });
-                    console.log("Có lỗi xảy ra khi cập nhật thứ tự:", xhr);
-                }
-            });
-            // Hiển thị hộp thoại xác nhận trước khi lưu
-            // Swal.fire({
-            //         title: "Xác nhận lưu?",
-            //         text: "Bạn có chắc chắn muốn lưu thứ tự này không?",
-            //         showCancelButton: true,
-            //         confirmButtonText: "Lưu",
-            //         cancelButtonText: `Hủy`
-            //     })
-            //     .then((result) => {
-            //         /* Read more about isConfirmed, isDenied below */
-            //         if (result.isConfirmed) {
-            //             // Nếu người dùng chọn "Lưu", gửi thứ tự mới qua Ajax
-            //             $.ajax({
-            //                 url: '/admin/updateOrder', // Đường dẫn đến API của bạn
-            //                 method: 'POST',
-            //                 data: {
-            //                     order: order, // Gửi mảng thứ tự mới
-            //                     _token: $('meta[name="csrf-token"]').attr('content') // CSRF token cho Laravel
-            //                 },
-            //                 success: function(response) {
-            //                     Swal.fire({
-            //                         title: "Saved",
-            //                         text: "Menu đã được lưu",
-            //                         icon: "success"
-            //                     });
-            //                     console.log("Thứ tự đã được cập nhật thành công:", response);
-            //                 },
-            //                 error: function(xhr) {
-            //                     Swal.fire({
-            //                         title: "Cancelled",
-            //                         text: "Menu chưa được lưu",
-            //                         icon: "error"
-            //                     });
-            //                     console.log("Có lỗi xảy ra khi cập nhật thứ tự:", xhr);
-            //                 }
-            //             });
-            //         } else {
-            //             Swal.fire({
-            //                 title: "Cancelled",
-            //                 text: "Menu chưa được lưu",
-            //                 icon: "error"
-            //             });
-            //         }
-            //     });
-        });
-
-    });
-</script> -->
 <script>
     //thêm
     $(document).ready(function() {
 
         // Sự kiện click cho nút "Add Menu"
-        $('#btn-add-menu').on('click', function() {
+        $('#btn-add-submenu').on('click', function() {
             // Sử dụng SweetAlert2 để hiển thị form chỉnh sửa
             Swal.fire({
                 title: 'Chỉnh sửa menu',
@@ -202,11 +122,12 @@
                 if (result.isConfirmed) {
                     // Gửi dữ liệu cập nhật qua AJAX
                     $.ajax({
-                        url: `/admin/addMenu`, // Đường dẫn cập nhật
+                        url: `/admin/addsubmenu`, // Đường dẫn cập nhật
                         method: 'POST',
                         data: {
                             name: result.value.name,
                             url: result.value.url,
+                            parent_id: "{{$menu->id}}",
                             _token: $('meta[name="csrf-token"]').attr('content') // CSRF token cho Laravel
                         },
                         success: function(response) {

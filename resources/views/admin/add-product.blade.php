@@ -60,12 +60,23 @@
                                 </div>
                             </div>
                             <div class="form-group row pt-1">
-                                <label class="col-12 col-sm-3 col-form-label text-sm-right">Danh mục</label>
+                                <label class="col-12 col-sm-3 col-form-label text-sm-right">Danh mục cấp 1</label>
                                 <div class="col-12 col-sm-8 col-lg-8">
-                                    <select class="form-control" name="menu_id">
+                                    <select class="form-control" id="select-parent" name="menu_id">
+                                        <option value="">Chọn danh mục</option>
                                         @foreach($menu as $m)
+                                        @if(is_null($m->parent_id))
                                         <option value="{{$m->id}}">{{$m->name}}</option>
+
+                                        @endif
                                         @endforeach
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group row pt-1">
+                                <label class="col-12 col-sm-3 col-form-label text-sm-right">Danh mục cấp 2</label>
+                                <div class="col-12 col-sm-8 col-lg-8">
+                                    <select class="form-control" id="select-child" name="menu_id">
                                     </select>
                                 </div>
                             </div>
@@ -198,6 +209,41 @@
 <script src="{{asset('assets\lib\parsley\parsley.min.js')}}" type="text/javascript"></script>
 <script src="{{asset('assets\lib\dropzone\dropzone.js')}}" type="text/javascript"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<!-- submenu -->
+<script>
+    // Tạo đối tượng menu và submenu từ dữ liệu PHP
+    var menuData = '{{$menu}}';
+    var cleanStr = menuData.replace(/&quot;/g, '"'); // Thay thế &quot; bằng dấu ngoặc kép "
+    var array = JSON.parse(cleanStr);
+    $('#select-parent').on('change', function() {
+        let parentId = $(this).val(); // Lấy giá trị menu cha đã chọn
+        let $submenuSelect = $('#select-child');
+        $submenuSelect.empty(); // Xóa các option cũ
+
+        // Kiểm tra nếu menu có submenu và hiển thị các submenu tương ứng
+        var hasSubmenu = false;
+
+        // Duyệt qua tất cả các menu
+        array.forEach(function(menu) {
+            if (menu.id == parentId) {
+                hasSubmenu = true;
+                // Duyệt qua các submenu của menu cha
+                if (menu.submenu && menu.submenu.length > 0) {
+                    menu.submenu.forEach(function(submenu) {
+                        $submenuSelect.append('<option value="' + submenu.id + '">' + submenu.name + '</option>');
+                    });
+                    $submenuSelect.show(); // Hiển thị dropdown submenu
+                }
+            }
+        });
+
+        // Nếu không có submenu thì ẩn dropdown submenu
+        if (!hasSubmenu) {
+            $submenuSelect.hide();
+        }
+    });
+</script>
+<!-- SEO -->
 <script>
     function checkSEO() {
 
@@ -340,6 +386,7 @@
         });
     }
 </script>
+<!-- url -->
 <script>
     const baseUrl = window.location.origin + "/";
     document.getElementById("url-simple").innerText = baseUrl;
@@ -363,6 +410,7 @@
         document.getElementById("url-simple").innerText = baseUrl + value;
     });
 </script>
+<!-- Dropzone -->
 <script>
     Dropzone.autoDiscover = false;
     $(document).ready(function() {

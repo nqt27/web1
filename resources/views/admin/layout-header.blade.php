@@ -27,7 +27,7 @@
 </head>
 
 <body>
-    
+
     </script>
     <div class="be-wrapper be-fixed-sidebar">
         <nav class="navbar navbar-expand fixed-top be-top-header">
@@ -108,12 +108,21 @@
                                     <ul class="sub-menu">
                                         <li><a href="{{route('news')}}">Tin tức</a>
                                         </li>
+                                        <li><a href="pages-blank.html">Menu bài viết</a>
+                                        </li>
                                     </ul>
                                 </li>
 
 
                                 <li><a href="{{route('menu.index')}}"><i class="icon mdi mdi-dns"></i>Quản lý menu</a></li>
-                                <li><a href="{{route('product.index')}}"><i class="icon mdi mdi-shopping-cart"></i>Quản lý sản phẩm</a></li>
+                                <li class="parent"><a href="{{route('product.index')}}"><i class="icon mdi mdi-shopping-cart"></i>Sản phẩm</a>
+                                    <ul class="sub-menu">
+                                        <li><a href="{{route('product.index')}}"></i>Quản lý sản phẩm</a>
+                                        </li>
+                                        <li><a href="{{route('menu.index')}}">Menu sản phẩm</a>
+                                        </li>
+                                    </ul>
+                                </li>
                                 <li class="parent"><a href="#"><i class="icon mdi mdi-layers"></i><span>Quản lý trang</span></a>
                                     <ul class="sub-menu">
 

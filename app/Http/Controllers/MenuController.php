@@ -11,8 +11,21 @@ class MenuController extends Controller
     public function index()
     {
         // Lấy tất cả menu cùng với menu con (nếu có)
-        $menu = Menu::with('submenu')->whereNull('parent_id')->orderBy('position')->get();
+        // $menu = Menu::with('submenu')->whereNull('parent_id')->orderBy('position')->get();
+        $menu = Menu::whereNull('parent_id') // Chỉ lấy menu cha
+            ->orderBy('position') // Sắp xếp theo vị trí
+            ->get();
         return view('admin.menu',  ['menu' => $menu]);
+    }
+    public function submenu($id)
+    {
+        $menu = Menu::with('submenu')->where('id', $id)->first();
+        // Lấy tất cả menu cùng với menu con (nếu có)
+        $submenu = Menu::with('submenu')
+            ->where('parent_id', $id)
+            ->orderBy('position')
+            ->get();
+        return view('admin.submenu',  ['menu' => $menu, 'submenu' => $submenu]);
     }
     public function store(Request $request)
     {
@@ -28,7 +41,7 @@ class MenuController extends Controller
         $menu->name = $request->input('name');
         $menu->url = $request->input('url');
 
-        $menu->position = $maxPosition + 1; 
+        $menu->position = $maxPosition + 1;
         $menu->save();
         // Redirect về trang chủ hoặc trang danh sách sản phẩm
         try {
@@ -49,6 +62,26 @@ class MenuController extends Controller
         // Redirect lại trang danh sách sản phẩm với thông báo thành công
         return redirect()->route('admin')->with('success', 'Product deleted successfully.');
     }
+    public function addSub(Request $request)
+    {
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'url' => 'required|string|max:255',
+
+        ]);
+
+
+
+        $submenu = new Menu();
+        $submenu->name = $request->input('name');
+        $submenu->url = $request->input('url');
+        $submenu->parent_id = $request->input('parent_id');
+        // Cập nhật các trường khác nếu cần
+
+        $submenu->save();
+
+        return redirect()->route('admin')->with('success', 'Product updated successfully.');
+    }
     public function update(Request $request, $id)
     {
         $request->validate([
@@ -56,12 +89,12 @@ class MenuController extends Controller
             'url' => 'required|string|max:255',
 
         ]);
-        
+
 
         $menu = Menu::findOrFail($id);
 
         $menu->name = $request->input('name');
-        $menu->url = $request->input('url');// Thêm 1 vào vị trí lớn nhất
+        $menu->url = $request->input('url'); // Thêm 1 vào vị trí lớn nhất
         // Cập nhật các trường khác nếu cần
 
         $menu->save();
@@ -69,16 +102,16 @@ class MenuController extends Controller
         return redirect()->route('admin')->with('success', 'Product updated successfully.');
     }
     // Cập nhật thứ tự của menu
-    public function updateOrder(Request $request)
+    public function updateOrder(Request $request, $id)
     {
         // Kiểm tra xem có dữ liệu 'order' được gửi trong request không
         $orderData = $request->input('order');
         if (!$orderData) {
             return response()->json(['error' => 'Không có dữ liệu thứ tự'], 400);
         }
-
+        // $menuItem = Menu::find($item['id']);
         // Hàm đệ quy để cập nhật vị trí và cấp độ lồng nhau
-        $this->updateOrderRecursive($orderData, null);
+        $this->updateOrderRecursive($orderData, $id);
 
         return response()->json(['success' => 'Thứ tự đã được cập nhật thành công']);
     }
