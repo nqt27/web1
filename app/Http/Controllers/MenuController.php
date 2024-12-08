@@ -102,7 +102,7 @@ class MenuController extends Controller
         return redirect()->route('admin')->with('success', 'Product updated successfully.');
     }
     // Cập nhật thứ tự của menu
-    public function updateOrder(Request $request, $id)
+    public function updateOrder(Request $request)
     {
         // Kiểm tra xem có dữ liệu 'order' được gửi trong request không
         $orderData = $request->input('order');
@@ -111,25 +111,19 @@ class MenuController extends Controller
         }
         // $menuItem = Menu::find($item['id']);
         // Hàm đệ quy để cập nhật vị trí và cấp độ lồng nhau
-        $this->updateOrderRecursive($orderData, $id);
+        $this->updateOrderRecursive($orderData);
 
         return response()->json(['success' => 'Thứ tự đã được cập nhật thành công']);
     }
 
-    private function updateOrderRecursive($items, $parentId)
+    private function updateOrderRecursive($items)
     {
         foreach ($items as $index => $item) {
             // Tìm mục trong cơ sở dữ liệu và cập nhật vị trí, parent_id
-            $menuItem = Menu::find($item['id']);
+            $menuItem = Menu::find($item); // Chỉ lấy menu cha
             if ($menuItem) {
                 $menuItem->position = $index;
-                $menuItem->parent_id = $parentId;
                 $menuItem->save();
-
-                // Nếu mục có children, gọi đệ quy để cập nhật các mục con
-                if (!empty($item['children'])) {
-                    $this->updateOrderRecursive($item['children'], $menuItem->id);
-                }
             }
         }
     }

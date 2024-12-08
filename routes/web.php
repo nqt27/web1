@@ -36,7 +36,7 @@ Route::middleware(['auth'])->group(function () {
     Route::delete('/admin/menu/{id}', [MenuController::class, 'destroy'])->name('menu.destroy');
     Route::put('/admin/menu/{id}', [MenuController::class, 'update'])->name('menu.update');
     Route::post('/admin/addsubmenu', [MenuController::class, 'addSub'])->name('menu.addSub');
-    Route::post('/admin/updateOrder/{id}', [MenuController::class, 'updateOrder'])->name('menu.updateOrder');
+    Route::post('/admin/updateOrder', [MenuController::class, 'updateOrder'])->name('menu.updateOrder');
     Route::get('/admin/submenu/{id}', [MenuController::class, 'submenu'])->name('menu.submenu');
 
     ///////////   PRODUCTS   /////////////////////////
