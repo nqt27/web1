@@ -106,7 +106,7 @@
                                 </li>
                                 <li class="parent"><a href="#"><i class="icon mdi mdi-view-subtitles"></i><span>Quản lý bài viết</span></a>
                                     <ul class="sub-menu">
-                                        <li><a href="{{route('news')}}">Tin tức</a>
+                                        <li><a href="{{route('news')}}"></i>Bài viết</a>
                                         </li>
                                         <li><a href="pages-blank.html">Menu bài viết</a>
                                         </li>
@@ -115,7 +115,7 @@
 
 
                                 <li><a href="{{route('menu.index')}}"><i class="icon mdi mdi-dns"></i>Quản lý menu</a></li>
-                                <li class="parent"><a href="{{route('product.index')}}"><i class="icon mdi mdi-shopping-cart"></i>Sản phẩm</a>
+                                <li class="parent"><a href="#"><i class="icon mdi mdi-shopping-cart"></i>Sản phẩm</a>
                                     <ul class="sub-menu">
                                         <li><a href="{{route('product.index')}}"></i>Quản lý sản phẩm</a>
                                         </li>

@@ -76,7 +76,7 @@
                             <div class="form-group row pt-1">
                                 <label class="col-12 col-sm-3 col-form-label text-sm-right">Danh mục cấp 2</label>
                                 <div class="col-12 col-sm-8 col-lg-8">
-                                    <select class="form-control" id="select-child" name="menu_id">
+                                    <select class="form-control" id="select-child" name="menu_id2">
                                     </select>
                                 </div>
                             </div>
@@ -487,7 +487,6 @@
                     formData.append(this.name, $(this).val());
                 }
             });
-
             // Lấy dữ liệu từ form trạng thái
             $('#product-status-form').find('input').each(function() {
                 if (this.name) {

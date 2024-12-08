@@ -21,13 +21,21 @@
                         </div>
 
                         <div class="form-group row px-5">
-                            <label class="col-12 col-sm-2" style="display: flex; align-items: center;">Chọn danh mục:</label>
+                            <label class="col-12 col-sm-2" style="display: flex; align-items: center;">Danh mục cấp 1:</label>
                             <div class="col-12 col-sm-8 col-lg-3">
-                                <select class="form-control select2">
+                                <select class="form-control" id="select-parent">
                                     <option value="All">Tất cả</option>
-                                    @foreach($menu as $m)
-                                    <option value="{{$m->name}}">{{$m->name}}</option>
+                                    @foreach($selectmenu as $m)
+                                    <option value="{{$m->id}}">{{$m->name}}</option>
                                     @endforeach
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group row px-5">
+                            <label class="col-12 col-sm-2" style="display: flex; align-items: center;">Danh mục cấp 2</label>
+                            <div class="col-12 col-sm-8 col-lg-3">
+                                <select class="form-control select2" id="select-child">
+
                                 </select>
                             </div>
                         </div>
@@ -129,6 +137,43 @@
 <script src="{{asset('assets\lib\datatables\datatables.net-responsive-bs4\js\responsive.bootstrap4.min.js')}}" type="text/javascript"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
+<!-- submenu -->
+<script>
+    // Tạo đối tượng menu và submenu từ dữ liệu PHP
+    var menuData = '{{$selectmenu}}';
+    var cleanStr = menuData.replace(/&quot;/g, '"'); // Thay thế &quot; bằng dấu ngoặc kép "
+    var array = JSON.parse(cleanStr);
+    console.log(array);
+
+    $('#select-parent').on('change', function() {
+        let parentId = $(this).val(); // Lấy giá trị menu cha đã chọn
+        let $submenuSelect = $('#select-child');
+        $submenuSelect.empty(); // Xóa các option cũ
+        console.log(parentId);
+
+        // Kiểm tra nếu menu có submenu và hiển thị các submenu tương ứng
+        var hasSubmenu = false;
+
+        // Duyệt qua tất cả các menu
+        array.forEach(function(menu) {
+            if (menu.id == parentId) {
+                hasSubmenu = true;
+                // Duyệt qua các submenu của menu cha
+                if (menu.submenu && menu.submenu.length > 0) {
+                    menu.submenu.forEach(function(submenu) {
+                        $submenuSelect.append('<option value="' + submenu.name + '">' + submenu.name + '</option>');
+                    });
+                    $submenuSelect.show(); // Hiển thị dropdown submenu
+                }
+            }
+        });
+
+        // Nếu không có submenu thì ẩn dropdown submenu
+        if (!hasSubmenu) {
+            $submenuSelect.hide();
+        }
+    });
+</script>
 <script>
     $(document).ready(function() {
         var table = $('#table1').DataTable({
@@ -146,9 +191,15 @@
         $.fn.dataTable.ext.search.push(
             function(settings, data, dataIndex) {
                 var l = $(".select2").val(); // Giá trị option đã chọn
+                var menuData = '{{$selectmenu}}';
+                var cleanStr = menuData.replace(/&quot;/g, '"'); // Thay thế &quot; bằng dấu ngoặc kép "
+                var array = JSON.parse(cleanStr);
+                console.log(array);
+
+
                 var s = data[5]; // '2' là chỉ số của cột "Danh mục" trong bảng
                 // Nếu không chọn gì (giá trị rỗng), hiển thị tất cả
-                if (l == s || "All" == l) {
+                if (l == s || "All" ==  $('#select-parent').val()) {
                     return true;
                 }
                 return false;
@@ -156,6 +207,9 @@
         );
 
         // Sự kiện thay đổi khi chọn option trong select
+        $('#select-parent').on('change', function() {
+            table.draw(); // Cập nhật DataTable để áp dụng bộ lọc
+        });
         $('.select2').on('change', function() {
             table.draw(); // Cập nhật DataTable để áp dụng bộ lọc
         });

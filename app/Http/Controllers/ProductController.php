@@ -12,9 +12,13 @@ class ProductController extends Controller
 {
     public function index()
     {
-        $menu = Menu::all(); //
+        $menu = Menu::all();
+        $selectmenu = Menu::with('submenu') // Lấy menu cha
+            ->whereNull('parent_id') // Lấy luôn menu con
+            ->orderBy('position') // Sắp xếp theo vị trí
+            ->get();
         $products = Products::all();
-        return view('admin.product',  ['products' => $products, 'menu' => $menu]);
+        return view('admin.product',  ['products' => $products, 'menu' => $menu, 'selectmenu' => $selectmenu]);
     }
     public function add()
     {
@@ -72,7 +76,7 @@ class ProductController extends Controller
         $product->name = $request->input('name');
         $product->description = $request->input('description');
         $product->price = $request->input('price');
-        $product->menu_id = $request->input('menu_id');
+        $product->menu_id = $request->input('menu_id2');
         $product->keyword_focus = $request->input('keyword_focus');
         $product->seo_title = $request->input('seo_title');
         $product->seo_keywords = $request->input('seo_keywords');
@@ -128,15 +132,16 @@ class ProductController extends Controller
     {
         $product = Products::where('id', $id)->first();
 
-        if (!$product) {
-            return redirect()->back()->with('error', 'Product not found.');
-        }
-        $parentMenu = Menu::where('name', 'Sản phẩm')->first(); // Lấy menu cha có tên 'Sản phẩm'
+        // Lấy menu con đã chọn
+        $selectedMenu = Menu::find($product->menu_id);
 
-        $menu = Menu::where('parent_id', $parentMenu->id)  // Lọc menu con của menu cha 'Sản phẩm'
+        // Lấy menu cha và các menu con liên quan
+        $menu = Menu::whereNull('parent_id')
+            ->with('submenu')
             ->get();
 
-        return view('admin.show-update', ['product' => $product, 'menu' => $menu]);
+
+        return view('admin.show-update', ['product' => $product, 'menu' => $menu, 'selectedMenu' => $selectedMenu]);
     }
     public function update(Request $request, $id)
     { // Kiểm tra dữ liệu đầu vào
@@ -189,7 +194,7 @@ class ProductController extends Controller
         $product->name = $request->input('name');
         $product->description = $request->input('description');
         $product->price = $request->input('price');
-        $product->menu_id = $request->input('menu_id');
+        $product->menu_id = $request->input('menu_id2');
         $product->keyword_focus = $request->input('keyword_focus');
         $product->seo_title = $request->input('seo_title');
         $product->seo_keywords = $request->input('seo_keywords');
