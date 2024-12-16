@@ -110,6 +110,7 @@ header {
 .banner-video {
     position: absolute;
     transition: opacity 0.5s ease;
+    width: 100%;
 }
 #banner-video.hidden {
     opacity: 0; /* Hide the video smoothly */

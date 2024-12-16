@@ -65,6 +65,7 @@
                                         <td class="col-1">
                                             @foreach($menu as $m)
                                             @if($p->menu_id == $m->id)
+                                            <span style="display: none;">{{$m->id}}</span>
                                             {{$m->name}}
                                             @endif
                                             @endforeach
@@ -117,6 +118,7 @@
     </div>
 </div>
 </div>
+@include('admin/layout-footer')
 <script src="{{asset('assets\lib\jquery\jquery.min.js')}}" type="text/javascript"></script>
 <script src="{{asset('assets\lib\perfect-scrollbar\js\perfect-scrollbar.min.js')}}" type="text/javascript"></script>
 <script src="{{asset('assets\lib\bootstrap\dist\js\bootstrap.bundle.min.js')}}" type="text/javascript"></script>
@@ -135,241 +137,19 @@
 <script src="{{asset('assets\lib\datatables\datatables.net-buttons-bs4\js\buttons.bootstrap4.min.js')}}" type="text/javascript"></script>
 <script src="{{asset('assets\lib\datatables\datatables.net-responsive\js\dataTables.responsive.min.js')}}" type="text/javascript"></script>
 <script src="{{asset('assets\lib\datatables\datatables.net-responsive-bs4\js\responsive.bootstrap4.min.js')}}" type="text/javascript"></script>
+<script src="{{asset('js\feature.js')}}" type="text/javascript"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
-<!-- submenu -->
-<script>
-    // Tạo đối tượng menu và submenu từ dữ liệu PHP
-    var menuData = '{{$selectmenu}}';
-    var cleanStr = menuData.replace(/&quot;/g, '"'); // Thay thế &quot; bằng dấu ngoặc kép "
-    var array = JSON.parse(cleanStr);
-    console.log(array);
 
-    $('#select-parent').on('change', function() {
-        let parentId = $(this).val(); // Lấy giá trị menu cha đã chọn
-        let $submenuSelect = $('#select-child');
-        $submenuSelect.empty(); // Xóa các option cũ
-        console.log(parentId);
-
-        // Kiểm tra nếu menu có submenu và hiển thị các submenu tương ứng
-        var hasSubmenu = false;
-
-        // Duyệt qua tất cả các menu
-        array.forEach(function(menu) {
-            if (menu.id == parentId) {
-                hasSubmenu = true;
-                // Duyệt qua các submenu của menu cha
-                if (menu.submenu && menu.submenu.length > 0) {
-                    menu.submenu.forEach(function(submenu) {
-                        $submenuSelect.append('<option value="' + submenu.name + '">' + submenu.name + '</option>');
-                    });
-                    $submenuSelect.show(); // Hiển thị dropdown submenu
-                }
-            }
-        });
-
-        // Nếu không có submenu thì ẩn dropdown submenu
-        if (!hasSubmenu) {
-            $submenuSelect.hide();
-        }
-    });
-</script>
-<script>
-    $(document).ready(function() {
-        var table = $('#table1').DataTable({
-            order: [
-                [1, 'asc']
-            ],
-            columnDefs: [{
-                    orderable: false,
-                    targets: [0, 3, 4, 5, 6, 7]
-                } // Chỉ định các cột không sắp xếp, theo chỉ mục (bắt đầu từ 0)
-            ]
-        });
-
-        // Hàm lọc tùy chỉnh
-        $.fn.dataTable.ext.search.push(
-            function(settings, data, dataIndex) {
-                var l = $(".select2").val(); // Giá trị option đã chọn
-                var menuData = '{{$selectmenu}}';
-                var cleanStr = menuData.replace(/&quot;/g, '"'); // Thay thế &quot; bằng dấu ngoặc kép "
-                var array = JSON.parse(cleanStr);
-                console.log(array);
-
-
-                var s = data[5]; // '2' là chỉ số của cột "Danh mục" trong bảng
-                // Nếu không chọn gì (giá trị rỗng), hiển thị tất cả
-                if (l == s || "All" ==  $('#select-parent').val()) {
-                    return true;
-                }
-                return false;
-            }
-        );
-
-        // Sự kiện thay đổi khi chọn option trong select
-        $('#select-parent').on('change', function() {
-            table.draw(); // Cập nhật DataTable để áp dụng bộ lọc
-        });
-        $('.select2').on('change', function() {
-            table.draw(); // Cập nhật DataTable để áp dụng bộ lọc
-        });
-    });
-</script>
-<!-- STATUS -->
-<script>
-    $(document).ready(function() {
-        // Lắng nghe sự kiện thay đổi của tất cả checkbox
-        $('.status-checkbox').on('change', function() {
-            var productDiv = $(this).closest('.product-status'); // Tìm div chứa checkbox của sản phẩm
-            var productId = productDiv.data('product-id'); // Lấy ID sản phẩm từ data attribute của div
-
-            console.log("Product ID: " + productId);
-            if (!productId) {
-                console.log(productId);
-                return; // Nếu không có productId, không gửi yêu cầu AJAX
-            }
-            // Lấy trạng thái các checkbox trong div này
-            var display = productDiv.find('input[name="display"]').prop('checked') ? 1 : 0;
-            var discount = productDiv.find('input[name="discount"]').prop('checked') ? 1 : 0;
-            var is_new = productDiv.find('input[name="is_new"]').prop('checked') ? 1 : 0;
-
-            // Gửi yêu cầu AJAX để cập nhật các trạng thái
-            $.ajax({
-                url: '/admin/product-status/' + productId, // Đường dẫn route cho update
-                method: 'POST',
-                data: {
-                    _token: $('meta[name="csrf-token"]').attr('content'), // CSRF Token
-                    display: display, // Trạng thái display
-                    discount: discount, // Trạng thái discount
-                    is_new: is_new, // Trạng thái is_new
-                    _method: 'PUT'
-                },
-                success: function(response) {
-                    console.log('Cập nhật trạng thái thành công cho sản phẩm ID: ' + productId);
-                    // Tùy chọn: Cập nhật DOM hoặc thông báo thành công
-                },
-                error: function(xhr) {
-                    console.log("Lỗi khi cập nhật trạng thái:", xhr);
-                }
-            });
-        });
-    });
-</script>
-<!-- DELETE -->
-<script>
-    $(document).ready(function() {
-        $('.delete-btn').on('click', function() {
-            // Lấy thông tin menu từ thuộc tính data của nút
-            let productId = $(this).data('id');
-            var row = $(this).closest('tr'); // Lấy dòng chứa nút xóa
-
-            // Sử dụng SweetAlert2 để hiển thị form chỉnh sửa
-            Swal.fire({
-                title: 'Bạn có chắc chắn muốn xóa?',
-                text: "Hành động này không thể hoàn tác!",
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonText: 'Xóa',
-                cancelButtonText: 'Hủy'
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    // Gửi dữ liệu cập nhật qua AJAX
-                    $.ajax({
-                        url: `/admin/product/${productId}`, // Đường dẫn cập nhật
-                        method: 'POST',
-                        data: {
-                            _method: 'DELETE',
-                            _token: $('meta[name="csrf-token"]').attr('content') // CSRF token cho Laravel
-                        },
-                        success: function(response) {
-                            Swal.fire({
-                                title: "Đã xóa",
-                                text: "Dã xóa sản phẩm",
-                                icon: "success"
-                            });
-
-                            row.remove();
-
-                            // Tùy chọn: Tải lại trang hoặc cập nhật DOM để phản ánh thay đổi
-                        },
-                        error: function(xhr) {
-                            Swal.fire({
-                                icon: 'error',
-                                title: 'Thất bại',
-                                text: 'Có lỗi xảy ra trong quá trình xóa.'
-                            });
-                            console.log("Lỗi:", xhr);
-                        }
-                    });
-                }
-            });
-        });
-    });
-</script>
-<!-- DELETE ALL -->
-<script>
-    $(document).ready(function() {
-        $('#select-all').on('click', function() {
-            $('.select-item').prop('checked', this.checked);
-        });
-        $('#delete-all').on('click', function() {
-            var selectedIds = [];
-            $('.select-item:checked').each(function() {
-                selectedIds.push($(this).val());
-            });
-            if (selectedIds.length > 0) {
-                Swal.fire({
-                    title: 'Bạn có chắc muốn xóa tất cả sản phẩm?',
-                    text: "Hành động này không thể khôi phục!",
-                    icon: 'warning',
-                    showCancelButton: true,
-                    confirmButtonText: 'Xóa',
-                    cancelButtonText: 'Hủy'
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        // Gửi yêu cầu AJAX
-                        $.ajax({
-                            url: '/admin/delete-all',
-                            type: 'POST',
-                            data: {
-                                ids: selectedIds,
-                                _token: '{{ csrf_token() }}'
-                            },
-                            success: function(response) {
-                                // Xóa các hàng đã chọn khỏi giao diện
-                                $('.select-item:checked').closest('tr').remove();
-                                Swal.fire({
-                                    icon: 'success',
-                                    title: 'Đã xóa tất cả!',
-                                    text: "Dữ liệu không thể khôi phục!",
-                                    timer: 3000,
-                                })
-                            },
-                            error: function(xhr) {
-                                Swal.fire({
-                                    icon: 'error',
-                                    title: 'Lỗi',
-                                    text: 'Có lỗi xảy ra. Vui lòng thử lại.'
-                                });
-                            }
-                        });
-                    }
-                });
-
-            } else {
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Chưa có mục nào được chọn',
-                    text: 'Chọn một mục để xóa'
-                });
-            }
-        });
-    });
-</script>
 
 <script type="text/javascript">
     $(document).ready(function() {
         //-initialize the javascript
+        selectMenu('{{$selectmenu}}')
+        table('{{$selectmenu}}', [0, 3, 4, 5, 6, 7]);
+        statusProduct('/admin/product-status/');
+        deleteItem('/admin/product/');
+        deleteAll('/admin/delete-all');
         App.init();
         App.dataTables();
     });

@@ -104,17 +104,7 @@
                                 <li class="divider">Menu</li>
                                 <li><a href="{{route('admin')}}"><i class="icon mdi mdi-home"></i><span>Bảng điều khiển</span></a>
                                 </li>
-                                <li class="parent"><a href="#"><i class="icon mdi mdi-view-subtitles"></i><span>Quản lý bài viết</span></a>
-                                    <ul class="sub-menu">
-                                        <li><a href="{{route('news')}}"></i>Bài viết</a>
-                                        </li>
-                                        <li><a href="pages-blank.html">Menu bài viết</a>
-                                        </li>
-                                    </ul>
-                                </li>
-
-
-                                <li><a href="{{route('menu.index')}}"><i class="icon mdi mdi-dns"></i>Quản lý menu</a></li>
+                                <!-- <li><a href="{{route('menu.index')}}"><i class="icon mdi mdi-dns"></i>Quản lý menu</a></li> -->
                                 <li class="parent"><a href="#"><i class="icon mdi mdi-shopping-cart"></i>Sản phẩm</a>
                                     <ul class="sub-menu">
                                         <li><a href="{{route('product.index')}}"></i>Quản lý sản phẩm</a>
@@ -123,6 +113,16 @@
                                         </li>
                                     </ul>
                                 </li>
+                                <li class="parent"><a href="#"><i class="icon mdi mdi-view-subtitles"></i><span>Bài viết</span></a>
+                                    <ul class="sub-menu">
+                                        <li><a href="{{route('news.index')}}"></i>Bài viết</a>
+                                        </li>
+                                        <li><a href="{{route('menu-news.index')}}">Menu bài viết</a>
+                                        </li>
+                                    </ul>
+                                </li>
+
+
                                 <li class="parent"><a href="#"><i class="icon mdi mdi-layers"></i><span>Quản lý trang</span></a>
                                     <ul class="sub-menu">
 
@@ -153,7 +153,10 @@
                                 </li>
                                 <li class="parent"><a href="#"><i class="icon mdi mdi-assignment"></i><span>SEO Page</span></a>
                                     <ul class="sub-menu">
-                                        <li><a href="{{route('seo')}}">Thiết lập SEO</a>
+                                        
+                                        <li><a href="{{route('seo')}}">Trang chủ</a>
+                                        <li><a href="{{route('seo')}}">Sản phẩm</a>
+                                        <li><a href="{{route('seo')}}">Giới thiệu</a>
                                         </li>
                                     </ul>
                                 </li>

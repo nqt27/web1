@@ -44,7 +44,7 @@
                             <div class="form-group row">
                                 <label class="col-12 col-sm-3 col-form-label text-sm-right">Tên sản phẩm</label>
                                 <div class="col-12 col-sm-8 col-lg-8">
-                                    <input class="form-control" type="text" required="" placeholder="Tên sản phẩm" name="name">
+                                    <input class="form-control" type="text" required="" placeholder="Tên sản phẩm" name="name" id="name">
                                 </div>
                             </div>
                             <div class="form-group row">
@@ -196,6 +196,7 @@
 </div>
 </div>
 </div>
+@include('admin/layout-footer')
 
 <script src="{{asset('assets\lib\jquery\jquery.min.js')}}" type="text/javascript"></script>
 <script src="{{asset('assets\lib\perfect-scrollbar\js\perfect-scrollbar.min.js')}}" type="text/javascript"></script>
@@ -209,207 +210,9 @@
 <script src="{{asset('assets\lib\parsley\parsley.min.js')}}" type="text/javascript"></script>
 <script src="{{asset('assets\lib\dropzone\dropzone.js')}}" type="text/javascript"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-<!-- submenu -->
-<script>
-    // Tạo đối tượng menu và submenu từ dữ liệu PHP
-    var menuData = '{{$menu}}';
-    var cleanStr = menuData.replace(/&quot;/g, '"'); // Thay thế &quot; bằng dấu ngoặc kép "
-    var array = JSON.parse(cleanStr);
-    $('#select-parent').on('change', function() {
-        let parentId = $(this).val(); // Lấy giá trị menu cha đã chọn
-        let $submenuSelect = $('#select-child');
-        $submenuSelect.empty(); // Xóa các option cũ
-
-        // Kiểm tra nếu menu có submenu và hiển thị các submenu tương ứng
-        var hasSubmenu = false;
-
-        // Duyệt qua tất cả các menu
-        array.forEach(function(menu) {
-            if (menu.id == parentId) {
-                hasSubmenu = true;
-                // Duyệt qua các submenu của menu cha
-                if (menu.submenu && menu.submenu.length > 0) {
-                    menu.submenu.forEach(function(submenu) {
-                        $submenuSelect.append('<option value="' + submenu.id + '">' + submenu.name + '</option>');
-                    });
-                    $submenuSelect.show(); // Hiển thị dropdown submenu
-                }
-            }
-        });
-
-        // Nếu không có submenu thì ẩn dropdown submenu
-        if (!hasSubmenu) {
-            $submenuSelect.hide();
-        }
-    });
-</script>
-<!-- SEO -->
-<script>
-    function checkSEO() {
-
-        let results = [];
-        let focusKeyword = document.getElementById("keyword_focus").value;
-        //Keyword Focus
-        let checkFocusKeyword = (!focusKeyword) ?
-            `<div class="alert alert-danger alert-icon alert-dismissible check-seo" role="alert">
-                    <div class="icon"><span class="mdi mdi-close-circle-o"></span></div>
-                    <div class="message">
-                        <button class="close" type="button" data-dismiss="alert"></button>Đặt từ khóa chính cho nội dung.
-                    </div>
-                </div>` :
-            `<div class="alert alert-success alert-icon alert-dismissible check-seo" role="alert">
-                    <div class="icon"><span class="mdi mdi-check"></span></div>
-                    <div class="message">
-                        <button class="close" type="button" data-dismiss="alert"></button>Đã thêm từ khóa chính.
-                    </div>
-                </div>`;
-        //Keyword Focus nằm trong Title SEO
-        let titleSeo = document.getElementById("seo_title").value;
-        let checkFocusKeywordTitle = (titleSeo && focusKeyword && (titleSeo.toLowerCase().includes(focusKeyword.toLowerCase()))) ?
-
-            `<div class="alert alert-success alert-icon alert-dismissible check-seo" role="alert">
-                    <div class="icon"><span class="mdi mdi-check"></span></div>
-                    <div class="message">
-                        <button class="close" type="button" data-dismiss="alert"></button>Tiêu đề SEO bao gồm từ khóa chính.
-                    </div>
-                </div>` :
-            `<div class="alert alert-danger alert-icon alert-dismissible check-seo" role="alert">
-                    <div class="icon"><span class="mdi mdi-close-circle-o"></span></div>
-                    <div class="message">
-                        <button class="close" type="button" data-dismiss="alert"></button>Thêm Từ khóa chính vào tiêu đề SEO.
-                    </div>
-            </div>`;
-        //Vị trí Keyword Focus
-        let position = titleSeo.toLowerCase().indexOf(focusKeyword.toLowerCase());
-        let checkPosition = (titleSeo && focusKeyword && position >= 0 && position <= 20) ?
-            `<div class="alert alert-success alert-icon alert-dismissible check-seo" role="alert">
-                    <div class="icon"><span class="mdi mdi-check"></span></div>
-                    <div class="message">
-                        <button class="close" type="button" data-dismiss="alert"></button>Sử dụng từ khóa chính gần đầu tiêu đề SEO.
-                    </div>
-            </div>` :
-            `<div class="alert alert-danger alert-icon alert-dismissible check-seo" role="alert">
-                    <div class="icon"><span class="mdi mdi-close-circle-o"></span></div>
-                    <div class="message">
-                        <button class="close" type="button" data-dismiss="alert"></button>Sử dụng từ khóa chính gần đầu tiêu đề SEO.
-                    </div>
-            </div>`;
-        //Ký tự tiêu đề
-        if (titleSeo.length < 10) {
-            checkTitleLength =
-                `<div class="alert alert-danger alert-icon alert-dismissible check-seo" role="alert">
-                    <div class="icon"><span class="mdi mdi-close-circle-o"></span></div>
-                    <div class="message">
-                        <button class="close" type="button" data-dismiss="alert"></button>Tiêu đề quá ngắn. Tiêu đề nên từ 10 đến 70 ký tự
-                    </div>
-            </div>`;
-        } else if (titleSeo.length > 70) {
-            checkTitleLength =
-                `<div class="alert alert-danger alert-icon alert-dismissible check-seo" role="alert">
-                    <div class="icon"><span class="mdi mdi-close-circle-o"></span></div>
-                    <div class="message">
-                        <button class="close" type="button" data-dismiss="alert"></button>Tiêu đề quá dài. Tiêu đề nên từ 10 đến 70 ký tự
-                    </div>
-            </div>`;
-        } else {
-            checkTitleLength =
-                `<div class="alert alert-success alert-icon alert-dismissible check-seo" role="alert">
-                    <div class="icon"><span class="mdi mdi-check"></span></div>
-                    <div class="message">
-                        <button class="close" type="button" data-dismiss="alert"></button>Tiêu đề đã có độ dài tối ưu.
-                    </div>
-            </div>`;
-        }
-
-        //Keyword Focus nằm trong Mô tả SEO
-        let desSeo = document.getElementById("seo_description").value;
-        let checkFocusKeywordDes = (desSeo && focusKeyword && (desSeo.toLowerCase().includes(focusKeyword.toLowerCase()))) ?
-
-            `<div class="alert alert-success alert-icon alert-dismissible check-seo" role="alert">
-                    <div class="icon"><span class="mdi mdi-check"></span></div>
-                    <div class="message">
-                        <button class="close" type="button" data-dismiss="alert"></button>Mô tả SEO bao gồm từ khóa chính.
-                    </div>
-                </div>` :
-            `<div class="alert alert-danger alert-icon alert-dismissible check-seo" role="alert">
-                    <div class="icon"><span class="mdi mdi-close-circle-o"></span></div>
-                    <div class="message">
-                        <button class="close" type="button" data-dismiss="alert"></button>Thêm Từ khóa chính vào mô tả SEO.
-                    </div>
-            </div>`;
-        //Ký tự tiêu đề
-        if (desSeo.length < 10) {
-            checkDesLength =
-                `<div class="alert alert-danger alert-icon alert-dismissible check-seo" role="alert">
-                    <div class="icon"><span class="mdi mdi-close-circle-o"></span></div>
-                    <div class="message">
-                        <button class="close" type="button" data-dismiss="alert"></button>Mô tả quá ngắn. Mô tả nên từ 10 đến 160 ký tự
-                    </div>
-            </div>`;
-        } else if (desSeo.length > 160) {
-            checkDesLength =
-                `<div class="alert alert-danger alert-icon alert-dismissible check-seo" role="alert">
-                    <div class="icon"><span class="mdi mdi-close-circle-o"></span></div>
-                    <div class="message">
-                        <button class="close" type="button" data-dismiss="alert"></button>Mô tả quá dài. Mô tả nên từ 10 đến 160 ký tự
-                    </div>
-            </div>`;
-        } else {
-            checkDesLength =
-                `<div class="alert alert-success alert-icon alert-dismissible check-seo" role="alert">
-                    <div class="icon"><span class="mdi mdi-check"></span></div>
-                    <div class="message">
-                        <button class="close" type="button" data-dismiss="alert"></button>Mô tả đã có độ dài tối ưu.
-                    </div>
-            </div>`;
-        }
+<script src="{{asset('js\feature.js')}}" type="text/javascript"></script>
 
 
-
-        results.push(`
-        ${checkFocusKeyword}
-        ${checkFocusKeywordTitle}
-        ${checkPosition}
-        ${checkTitleLength}
-        ${checkFocusKeywordDes}
-        ${checkDesLength}
-        `);
-        // Hiển thị kết quả bằng SweetAlert2
-        Swal.fire({
-            title: 'Kết quả kiểm tra SEO',
-            html: results.join('<br>'),
-            icon: 'info',
-            confirmButtonText: 'OK',
-            customClass: {
-                popup: 'custom-swal-width' // Áp dụng lớp CSS tùy chỉnh
-            },
-        });
-    }
-</script>
-<!-- url -->
-<script>
-    const baseUrl = window.location.origin + "/";
-    document.getElementById("url-simple").innerText = baseUrl;
-    document.getElementById("product-url").addEventListener("input", function(event) {
-        // Lấy giá trị người dùng nhập
-        let value = event.target.value;
-
-        // Xử lý: Thay thế dấu cách bằng dấu gạch ngang, loại bỏ ký tự đặc biệt, chuyển chữ hoa thành chữ thường
-        value = value
-            .normalize('NFD') // Chuyển chuỗi thành dạng phân tách (NFD)
-            .replace(/[\u0300-\u036f]/g, '')
-            .toLowerCase() // Chuyển chữ hoa thành chữ thường
-            // .trim() // Xóa khoảng trắng đầu và cuối
-            .replace(/[^a-z0-9\s-]/g, '') // Loại bỏ ký tự đặc biệt
-            .replace(/\s+/g, '-') // Thay dấu cách bằng dấu '-'
-        // .replace(/-+/g, '-'); // Xóa bớt dấu '-' thừa nếu có
-
-        // Cập nhật giá trị ô input
-        event.target.value = value;
-        const baseUrl = window.location.origin + "/";
-        document.getElementById("url-simple").innerText = baseUrl + value;
-    });
-</script>
 <!-- Dropzone -->
 <script>
     Dropzone.autoDiscover = false;
@@ -553,6 +356,8 @@
 <script type="text/javascript">
     $(document).ready(function() {
         //-initialize the javascript
+        urlProduct();
+        selectMenuProduct('{{$menu}}');
         App.init();
         App.textEditors();
         $('form').parsley();

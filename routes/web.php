@@ -7,6 +7,8 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\LogoController;
 use App\Http\Controllers\MenuController;
+use App\Http\Controllers\MenuNewsController;
+use App\Http\Controllers\NewsController;
 use App\Http\Controllers\ProductController;
 use Illuminate\Auth\Events\Login;
 
@@ -24,7 +26,7 @@ use Illuminate\Auth\Events\Login;
 Route::get('/', function () {
     return app(HomeController::class)->index();
 })->name('home');
-
+Route::post('/domain', [HomeController::class, 'checkDomain'])->name('checkDomain');
 Route::middleware(['auth'])->group(function () {
     //admin
     Route::get('/admin', function () {
@@ -50,12 +52,23 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/admin/delete-all', [ProductController::class, 'deleteAll'])->name('product.deleteAll');
 
 
-    Route::get('/admin/news', function () {
-        return app(AdminController::class)->news();
-    })->name('news');
-    Route::get('/admin/add-news', function () {
-        return app(AdminController::class)->addNews();
-    })->name('addNews');
+    //////////////////    MENU NEWS  ////////////////////////////////////
+    Route::get('/admin/menu-news', [MenuNewsController::class, 'index'])->name('menu-news.index');
+    Route::post('/admin/addMenu-news', [MenuNewsController::class, 'store'])->name('menu-news.store');
+    Route::delete('/admin/menu-news/{id}', [MenuNewsController::class, 'destroy'])->name('menu-news.destroy');
+    Route::put('/admin/menu-news/{id}', [MenuNewsController::class, 'update'])->name('menu-news.update');
+    Route::post('/admin/addsubmenu-news', [MenuNewsController::class, 'addSub'])->name('menu-news.addSub');
+    Route::post('/admin/updateOrder-news', [MenuNewsController::class, 'updateOrder'])->name('menu-news.updateOrder');
+    Route::get('/admin/submenu-news/{id}', [MenuNewsController::class, 'submenu'])->name('menu-news.submenu');
+    ///////////   NEWS   /////////////////////////
+    Route::get('/admin/news', [NewsController::class, 'index'])->name('news.index');
+    Route::get('/admin/add-news', [NewsController::class, 'add'])->name('news.add');
+    Route::post('/admin/addNews', [NewsController::class, 'store'])->name('news.store');
+    Route::get('/admin/news-detail/{id}', [NewsController::class, 'show_update'])->name('news.show-update');
+    Route::delete('/admin/news/{id}', [NewsController::class, 'destroy'])->name('news.destroy');
+    Route::put('/admin/news/{id}', [NewsController::class, 'update'])->name('news.update');
+    Route::put('/admin/news-status/{id}', [NewsController::class, 'update_status'])->name('news.update_status');
+    Route::post('/admin/delete-all-news', [NewsController::class, 'deleteAll'])->name('news.deleteAll');
 
     Route::get('/admin/logo', function () {
         return app(AdminController::class)->logo();

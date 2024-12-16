@@ -11,21 +11,34 @@
         </nav>
     </div>
     <div class="main-content container-fluid">
-        <form method="post" action="{{route('logo.store')}}" enctype="multipart/form-data" class="dropzone" id="dropzone">
-            @csrf
-            <div class="dz-message">
-                <div class="icon"><span class="mdi mdi-cloud-upload"></span></div>
-                <h2>Drag and Drop files here</h2><span class="note">(This is just a demo dropzone. Selected files are <strong>not</strong> actually uploaded.)</span>
-                <div class="dropzone-mobile-trigger needsclick"></div>
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card card-border-color card-border-color-primary">
+                    <div class="card-header card-header-divider">Thay đổi logo
 
-        </form>
+                        <button class="btn btn-space btn-primary" style="float: right;" type="submit">Lưu logo</button>
+                        <button class="btn btn-space btn-secondary"style="float: right;">Hủy</button>
+                    </div>
+                    <div class="card-body" style="flex-direction: row; justify-content: center;">
+                        <form method="post" action="{{route('logo.store')}}" enctype="multipart/form-data" class="dropzone" id="dropzone" style="width: 40%;">
+                            @csrf
+                            <div class="dz-message">
+                                <div class="icon"><span class="mdi mdi-cloud-upload"></span></div>
+                                <h2>Kéo thả hình ảnh vào đây</h2><span class="note">hoặc bấm vào đây</span>
+                                <div class="dropzone-mobile-trigger needsclick"></div>
+                        </form>
+
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
     </div>
-    <button class="btn btn-space btn-primary" type="submit">Lưu</button>
-    <button class="btn btn-space btn-secondary">Hủy</button>
 </div>
 </div>
 </div>
-</div>
+@include('admin/layout-footer')
 
 <script src="{{asset('assets\lib\jquery\jquery.min.js')}}" type="text/javascript"></script>
 <script src="{{asset('assets\lib\perfect-scrollbar\js\perfect-scrollbar.min.js')}}" type="text/javascript"></script>

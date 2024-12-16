@@ -12,10 +12,17 @@ class News extends Model
     protected $fillable = [
         'title',
         'content',
+        'url',
+        'display',
+        'new',
+        'keyword_focus',
+        'seo_title',
+        'seo_keywords',
+        'seo_description',
         'image'
     ];
-    public function menu()
+    public function menu_news()
     {
-        return $this->belongsTo(Menu::class);
+        return $this->belongsTo(MenuNews::class);
     }
 }

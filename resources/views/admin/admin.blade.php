@@ -1,43 +1,53 @@
 @include('admin/layout-header')
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <div class="be-content">
     <div class="main-content container-fluid">
-        <div class="row">
+        <div class="row" style="justify-content: space-around;">
+            @php
+            $todayStats = $dailyStats->last();
+            @endphp
+
             <div class="col-12 col-lg-6 col-xl-3">
                 <div class="widget widget-tile">
-                    <div class="chart sparkline" id="spark1"></div>
+                    <div class="chart sparkline" id="date">
+                        <span class="mdi mdi-chart" style="font-size: 40px;    margin-left: 20px;"></span>
+                    </div>
                     <div class="data-info">
-                        <div class="desc">Thông báo mới</div>
-                        <div class="value"><span class="indicator indicator-equal mdi mdi-chevron-right"></span><span class="number" data-toggle="counter" data-end="113">0</span>
+                        <div class="desc">Lượt truy cập trong ngày</div>
+                        <div class="value"><span class="indicator indicator-equal mdi mdi-chevron-right"></span><span class="number" data-toggle="counter" data-end="{{$todayStats->total_visits}}">0 </span>
                         </div>
                     </div>
                 </div>
             </div>
+            @php
+            $todayStats = $weeklyStats->last();
+            @endphp
+
             <div class="col-12 col-lg-6 col-xl-3">
                 <div class="widget widget-tile">
-                    <div class="chart sparkline" id="spark2"></div>
+                    <div class="chart sparkline" id="week">
+                        <span class="mdi mdi-chart" style="font-size: 40px;    margin-left: 20px;"></span>
+                    </div>
                     <div class="data-info">
-                        <div class="desc">Bài viết mới</div>
-                        <div class="value"><span class="indicator indicator-positive mdi mdi-chevron-up"></span><span class="number" data-toggle="counter" data-end="80" data-suffix="%">0</span>
+                        <div class="desc">Lượt truy cập trong tuần</div>
+                        <div class="value"><span class="indicator indicator-equal mdi mdi-chevron-right"></span><span class="number" data-toggle="counter" data-end="{{$todayStats->total_visits}}">0 </span>
                         </div>
                     </div>
                 </div>
             </div>
+            @php
+            $todayStats = $monthlyStats->last();
+            @endphp
+
             <div class="col-12 col-lg-6 col-xl-3">
                 <div class="widget widget-tile">
-                    <div class="chart sparkline" id="spark3"></div>
-                    <div class="data-info">
-                        <div class="desc">Impressions</div>
-                        <div class="value"><span class="indicator indicator-positive mdi mdi-chevron-up"></span><span class="number" data-toggle="counter" data-end="532">0</span>
-                        </div>
+                    <div class="chart sparkline" id="month">
+                        <span class="mdi mdi-chart" style="font-size: 40px;    margin-left: 20px;"></span>
                     </div>
-                </div>
-            </div>
-            <div class="col-12 col-lg-6 col-xl-3">
-                <div class="widget widget-tile">
-                    <div class="chart sparkline" id="spark4"></div>
                     <div class="data-info">
-                        <div class="desc">Downloads</div>
-                        <div class="value"><span class="indicator indicator-negative mdi mdi-chevron-down"></span><span class="number" data-toggle="counter" data-end="113">0</span>
+                        <div class="desc">Lượt truy cập trong tháng</div>
+                        <div class="value"><span class="indicator indicator-equal mdi mdi-chevron-right"></span><span class="number" data-toggle="counter" data-end="{{$todayStats->total_visits}}">0 </span>
                         </div>
                     </div>
                 </div>
@@ -45,62 +55,117 @@
         </div>
         <div class="row">
             <div class="col-md-12">
-                <div class="widget widget-fullwidth be-loading">
-                    <div class="widget-head">
-                        <div class="tools">
-                            <div class="dropdown"><a class="dropdown-toggle" data-toggle="dropdown"><span class="icon mdi mdi-more-vert d-inline-block d-md-none"></span></a>
-                                <div class="dropdown-menu" role="menu"><a class="dropdown-item" href="#">Week</a><a class="dropdown-item" href="#">Month</a><a class="dropdown-item" href="#">Year</a>
-                                    <div class="dropdown-divider"></div><a class="dropdown-item" href="#">Today</a>
-                                </div>
-                            </div><span class="icon mdi mdi-chevron-down"></span><span class="icon toggle-loading mdi mdi-refresh-sync"></span><span class="icon mdi mdi-close"></span>
-                        </div>
-                        <div class="button-toolbar d-none d-md-block">
-                            <div class="btn-group">
-                                <button class="btn btn-secondary" type="button">Week</button>
-                                <button class="btn btn-secondary active" type="button">Month</button>
-                                <button class="btn btn-secondary" type="button">Year</button>
-                            </div>
-                            <div class="btn-group">
-                                <button class="btn btn-secondary" type="button">Today</button>
-                            </div>
-                        </div><span class="title">Recent Movement</span>
-                    </div>
-                    <div class="widget-chart-container">
-                        <div class="widget-chart-info">
-                            <ul class="chart-legend-horizontal">
-                                <li><span data-color="main-chart-color1"></span> Purchases</li>
-                                <li><span data-color="main-chart-color2"></span> Plans</li>
-                                <li><span data-color="main-chart-color3"></span> Services</li>
-                            </ul>
-                        </div>
-                        <div class="widget-counter-group widget-counter-group-right">
-                            <div class="counter counter-big">
-                                <div class="value">25%</div>
-                                <div class="desc">Purchase</div>
-                            </div>
-                            <div class="counter counter-big">
-                                <div class="value">5%</div>
-                                <div class="desc">Plans</div>
-                            </div>
-                            <div class="counter counter-big">
-                                <div class="value">5%</div>
-                                <div class="desc">Services</div>
-                            </div>
-                        </div>
-                        <div id="main-chart" style="height: 260px;"></div>
-                    </div>
-                    <div class="be-spinner">
-                        <svg width="40px" height="40px" viewbox="0 0 66 66" xmlns="http://www.w3.org/2000/svg">
-                            <circle class="circle" fill="none" stroke-width="4" stroke-linecap="round" cx="33" cy="33" r="30"></circle>
-                        </svg>
-                    </div>
-                </div>
+                <h3>Biểu đồ Lượt Truy Cập</h3>
+
+                <!-- Dropdown để chọn ngày, tuần, tháng -->
+                <select class="form-control" id="chartType" onchange="updateChart()" style="width: 20%;">
+                    <option value="daily">Ngày</option>
+                    <option value="weekly">Tuần</option>
+                    <option value="monthly">Tháng</option>
+                </select>
+
+                <!-- Biểu đồ -->
+                <canvas id="myChart" width="400" height="200"></canvas>
+
+                <script>
+                    // Dữ liệu ngày, tuần, tháng từ Blade
+                    var dailyDates = <?php echo json_encode($dailyDates); ?>;
+                    var dailyVisits = <?php echo json_encode($dailyVisits); ?>;
+
+                    var weeklyDates = <?php echo json_encode($weeklyDates); ?>;
+                    var weeklyVisits = <?php echo json_encode($weeklyVisits); ?>;
+
+                    var monthlyDates = <?php echo json_encode($monthlyDates); ?>;
+                    var monthlyVisits = <?php echo json_encode($monthlyVisits); ?>;
+
+                    // Biểu đồ mặc định là theo ngày
+                    var currentDates = dailyDates;
+                    var currentVisits = dailyVisits;
+
+                    // Tạo biểu đồ
+                    var ctx = document.getElementById('myChart').getContext('2d');
+                    var myChart = new Chart(ctx, {
+                        type: 'line', // Loại biểu đồ
+                        data: {
+                            labels: currentDates, // Dữ liệu ngày
+                            datasets: [{
+                                label: 'Lượt Truy Cập',
+                                data: currentVisits, // Dữ liệu số lượt truy cập
+                                borderColor: 'rgba(75, 192, 192, 1)',
+                                backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                                fill: true,
+                                tension: 0.4 // Độ cong của đường
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            scales: {
+                                x: {
+                                    title: {
+                                        display: true,
+                                        text: 'Ngày'
+                                    }
+                                },
+                                y: {
+                                    title: {
+                                        display: true,
+                                        text: 'Số Lượt Truy Cập'
+                                    }
+                                }
+                            }
+                        },
+                        tooltip: {
+                            backgroundColor: 'rgba(0, 0, 0, 0.8)', // Màu nền của tooltip
+                            titleColor: '#fff', // Màu chữ tiêu đề
+                            bodyColor: '#fff', // Màu chữ nội dung
+                            borderColor: '#36A2EB', // Màu viền tooltip
+                            borderWidth: 2, // Độ dày của viền
+                            callbacks: {
+                                label: function(tooltipItem) {
+                                    return tooltipItem.yLabel + ' lượt truy cập'; // Thêm text mô tả
+                                }
+                            }
+                        },
+                        plugins: {
+                            legend: {
+                                position: 'top', // Vị trí của chú giải
+                                labels: {
+                                    font: {
+                                        size: 14, // Cỡ chữ của chú giải
+                                        weight: 'bold',
+                                        family: 'Arial'
+                                    },
+                                    color: '#36A2EB', // Màu chữ của chú giải
+                                }
+                            }
+                        }
+                    });
+
+                    // Hàm cập nhật biểu đồ khi thay đổi lựa chọn
+                    function updateChart() {
+                        var selected = document.getElementById('chartType').value;
+
+                        if (selected === 'daily') {
+                            myChart.data.labels = dailyDates;
+                            myChart.data.datasets[0].data = dailyVisits;
+                        } else if (selected === 'weekly') {
+                            myChart.data.labels = weeklyDates;
+                            myChart.data.datasets[0].data = weeklyVisits;
+                        } else if (selected === 'monthly') {
+                            myChart.data.labels = monthlyDates;
+                            myChart.data.datasets[0].data = monthlyVisits;
+                        }
+
+                        myChart.update();
+                    }
+                </script>
             </div>
         </div>
     </div>
 </div>
 
 </div>
+@include('admin/layout-footer')
 </div>
 <script src="{{asset('assets\lib\jquery\jquery.min.js')}}" type="text/javascript"></script>
 <script src="{{asset('assets\lib\perfect-scrollbar\js\perfect-scrollbar.min.js')}}" type="text/javascript"></script>
@@ -136,12 +201,13 @@
 
 <script src="{{asset('assets\lib\summernote\summernote-bs4.min.js')}}" type="text/javascript"></script>
 <script src="{{asset('assets\lib\summernote\summernote-ext-beagle.js')}}" type="text/javascript"></script>
-
 <script type="text/javascript">
     $(document).ready(function() {
         //-initialize the javascript
         App.init();
         App.dashboard();
+
+
     });
 </script>
 </body>

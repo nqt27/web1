@@ -2,7 +2,7 @@
 
 <div class="be-content">
     <div class="page-head">
-        <h2 class="page-head-title">Danh mục sản phẩm</h2>
+        <h2 class="page-head-title">Danh mục con của {{$menu->name}}</h2>
         <nav aria-label="breadcrumb" role="navigation">
             <ol class="breadcrumb page-head-nav">
                 <li class="breadcrumb-item"><a href="{{route('admin')}}">Admin</a></li>
@@ -18,14 +18,14 @@
                 <div id="column-1">
                     <div class="card">
                         <div class="card-header card-header-divider">
-                            <button class="btn btn-space btn-primary" id="btn-add-menu"><i class="icon icon-left mdi mdi-plus-circle"></i><span>Thêm menu</span></button>
+                            <button class="btn btn-space btn-primary" id="btn-add-submenu"><i class="icon icon-left mdi mdi-plus-circle"></i><span>Thêm menu</span></button>
                         </div>
 
                     </div>
-                    @foreach($menu as $m)
+                    @foreach($submenu as $m)
                     <div class="card menu-item" id="menu-{{$m->id}}">
                         <div class="card-header card-header-divider">{{$m->name}}
-                            <a href="/admin/submenu/{{$m->id}}" class="btn btn-space btn-primary btn-submenu" data-id="{{$m->id}}" data-name="{{$m->name}}" data-url="{{$m->url}}" type="button" style="float: right;"><i class="icon icon-left mdi mdi-view-list-alt"></i><span>Danh mục con</span></a>
+                            <!-- <button class="btn btn-space btn-primary btn-submenu" data-id="{{$m->id}}" data-name="{{$m->name}}" data-url="{{$m->url}}" type="button" style="float: right;"><i class="icon icon-left mdi mdi-view-list-alt"></i><span>Danh mục con</span></button> -->
                             <button class="btn btn-space btn-success edit-btn" data-id="{{$m->id}}" data-name="{{$m->name}}" data-url="{{$m->url}}" type="button" style="float: right;"><i class="icon icon-left mdi mdi-edit"></i><span>Sửa danh mục</span></button>
                             <button class="btn btn-space btn-danger delete-btn" data-id="{{$m->id}}" data-name="{{$m->name}}" data-url="{{$m->url}}" type="button" style="float: right;"><i class="icon icon-left mdi mdi-delete"></i><span>Xóa danh mục</span></button>
                         </div>
@@ -33,6 +33,7 @@
                     </div>
                     @endforeach
                 </div>
+
             </div>
         </div>
     </div>
@@ -54,15 +55,13 @@
 <script src="{{asset('assets\lib\dragula\dragula.min.js')}}" type="text/javascript"></script>
 
 
-<!-- <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script> -->
 
 
 <script type="text/javascript">
     $(document).ready(function() {
         App.init();
-        drag('/admin/updateOrder');
-        addMenu($('#btn-add-menu'), '/admin/addMenu', 'POST', null);
+        drag('/admin/updateOrder-news');
+        addMenu($('#btn-add-submenu'), '/admin/addsubmenu-news', 'POST', '{{$menu->id}}');
         editMenu($('.edit-btn'), `/admin/menu`);
         deleteMenu();
     });

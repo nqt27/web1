@@ -82,14 +82,22 @@
                 <div class="banner-content">
                     Đăng ký tên miền là bước đầu tiên để xây dựng một thương hiệu mạnh mẽ trên Internet. Một tên miền tốt không chỉ là địa chỉ web, mà còn là chìa khóa để mở ra cánh cửa thành công cho doanh nghiệp.
                 </div>
-                <div class="input-group mb-3">
-                    <input type="text" class="form-control" placeholder="Recipient's username" aria-label="Recipient's username" aria-describedby="basic-addon2">
-                    <button type="button" class="btn btn-primary">Primary</button>
-                </div>
-            </div>
-            <div class="banner-right">
-                <img src="{{asset('images/banner.png')}}" alt="">
 
+                <form method="post" action="{{ route('checkDomain') }}" class="input-group mb-3">
+                    @csrf
+                    <input type="text" class="form-control" placeholder="Recipient's username" aria-label="Recipient's username" aria-describedby="basic-addon2" name="domain">
+                    <button type="submit" class="btn btn-primary">Primary</button>
+                </form>
+                @if (session('details'))
+                <div class="alert alert-success" style="position:absolute;z-index: 9999999999;">
+                    {{ session('details') }}
+                </div>
+                @endif
+                @if (session('error'))
+                <div class="alert alert-success" style="position:absolute;z-index: 9999999999;">
+                    {{ session('error') }}
+                </div>
+                @endif
             </div>
         </div>
     </section>

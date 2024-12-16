@@ -40,7 +40,7 @@
 
 </div>
 </div>
-
+@include('admin/layout-footer')
 
 
 
@@ -60,7 +60,7 @@
 <script type="text/javascript">
     $(document).ready(function() {
         App.init();
-        drag();
+        drag('/admin/updateOrder');
         addMenu($('#btn-add-submenu'), '/admin/addsubmenu', 'POST', '{{$menu->id}}');
         editMenu($('.edit-btn'), `/admin/menu`);
         deleteMenu();

@@ -25,7 +25,7 @@
                     @foreach($menu as $m)
                     <div class="card menu-item" id="menu-{{$m->id}}">
                         <div class="card-header card-header-divider">{{$m->name}}
-                            <a href="/admin/submenu/{{$m->id}}" class="btn btn-space btn-primary btn-submenu" data-id="{{$m->id}}" data-name="{{$m->name}}" data-url="{{$m->url}}" type="button" style="float: right;"><i class="icon icon-left mdi mdi-view-list-alt"></i><span>Danh mục con</span></a>
+                            <a href="/admin/submenu-news/{{$m->id}}" class="btn btn-space btn-primary btn-submenu" data-id="{{$m->id}}" data-name="{{$m->name}}" data-url="{{$m->url}}" type="button" style="float: right;"><i class="icon icon-left mdi mdi-view-list-alt"></i><span>Danh mục con</span></a>
                             <button class="btn btn-space btn-success edit-btn" data-id="{{$m->id}}" data-name="{{$m->name}}" data-url="{{$m->url}}" type="button" style="float: right;"><i class="icon icon-left mdi mdi-edit"></i><span>Sửa danh mục</span></button>
                             <button class="btn btn-space btn-danger delete-btn" data-id="{{$m->id}}" data-name="{{$m->name}}" data-url="{{$m->url}}" type="button" style="float: right;"><i class="icon icon-left mdi mdi-delete"></i><span>Xóa danh mục</span></button>
                         </div>
@@ -61,8 +61,8 @@
 <script type="text/javascript">
     $(document).ready(function() {
         App.init();
-        drag('/admin/updateOrder');
-        addMenu($('#btn-add-menu'), '/admin/addMenu', 'POST', null);
+        drag('/admin/updateOrder-news');
+        addMenu($('#btn-add-menu'), '/admin/addMenu-news', 'POST', null);
         editMenu($('.edit-btn'), `/admin/menu`);
         deleteMenu();
     });
