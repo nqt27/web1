@@ -50,18 +50,24 @@
                                         <th>Hình ảnh</th>
                                         <th>Giá</th>
                                         <th>Danh mục</th>
-                                        <th>Hiển thị</th>
+                                        <th>Trạng thái</th>
                                         <th></th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     @foreach($products as $p)
                                     <tr class="odd gradeX a">
-                                        <td class="col-1"><input type="checkbox" class="select-item" value="{{ $p->id }}"></td>
-                                        <td class="col-1">{{$p->id}}</td>
+                                        <td style="width: 0%;"><input type="checkbox" class="select-item" value="{{ $p->id }}"></td>
+                                        <td style="width: 0%;">{{$p->id}}</td>
                                         <td class="col-2">{{$p->name}}</td>
-                                        <td class="col-2"><img src="{{asset('images/'. $p->image)}}" style="width: 90%" alt=""></td>
-                                        <td class="col-1">{{ number_format($p->price, 0, ',', '.') }} VND</td>
+                                        <td class="col-1"><img src="{{asset('uploads/images/'. $p->image)}}" style="width: 100%" alt=""></td>
+                                        <td class="col-1">
+                                            @if ($p->price)
+                                            <span>{{ number_format($p->price, 0, ',', '.') }} VNĐ</span>
+                                            @else
+                                            <span>Liên hệ</span>
+                                            @endif
+                                        </td>
                                         <td class="col-1">
                                             @foreach($menu as $m)
                                             @if($p->menu_id == $m->id)
@@ -70,7 +76,7 @@
                                             @endif
                                             @endforeach
                                         </td>
-                                        <td class="col-2 product-status" data-product-id="{{ $p->id }}">
+                                        <td class="col-1 product-status" data-product-id="{{ $p->id }}">
                                             <div class="form-group row" style="justify-content: space-between; align-items: center;">
                                                 <label style="padding: 0" class="col-12 col-sm-3 col-form-label"><strong>Hiển thị</strong></label>
                                                 <div style="padding: 0" class="col-12 col-sm-8 col-lg-6">

@@ -70,9 +70,7 @@ Route::middleware(['auth'])->group(function () {
     Route::put('/admin/news-status/{id}', [NewsController::class, 'update_status'])->name('news.update_status');
     Route::post('/admin/delete-all-news', [NewsController::class, 'deleteAll'])->name('news.deleteAll');
 
-    Route::get('/admin/logo', function () {
-        return app(AdminController::class)->logo();
-    })->name('logo');
+
 
     Route::get('/admin/seo-page', function () {
         return app(AdminController::class)->seo();

@@ -19,7 +19,10 @@ class LogVisit
     public function handle($request, Closure $next)
     {
         $currentUrl = $request->path();
-
+        // Loại trừ các URL liên quan đến admin
+        if ($this->isAdminUrl($currentUrl)) {
+            return $next($request);
+        }
         // Chỉ ghi lại các truy cập không phải file tĩnh hoặc tài nguyên bổ sung
         if (!$this->isStaticAsset($currentUrl)) {
             $today = now()->toDateString();
@@ -51,5 +54,10 @@ class LogVisit
             }
         }
         return false;
+    }
+    // Hàm kiểm tra URL admin
+    protected function isAdminUrl($url)
+    {
+        return str_starts_with($url, 'admin'); // Hoặc điều kiện tương ứng với URL admin của bạn
     }
 }

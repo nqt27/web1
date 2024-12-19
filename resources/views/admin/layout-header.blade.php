@@ -8,7 +8,7 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <meta name="description" content="">
     <meta name="author" content="">
-    <link rel="shortcut icon" href="{{asset('assets/img/logo.png')}}">
+    <link rel="shortcut icon" href="{{asset('assets/img/logo.jpg')}}">
     <title>Admin</title>
 
     <link rel="stylesheet" type="text/css" href="{{asset('assets/lib/perfect-scrollbar/css/perfect-scrollbar.css')}}">
@@ -39,7 +39,7 @@
                         <li class="nav-item dropdown"><a class="nav-link dropdown-toggle" href="#" data-toggle="dropdown" role="button" aria-expanded="false"><img src="{{asset('assets\img\avatar.png')}}" alt="Avatar"><span class="user-name">Túpac Amaru</span></a>
                             <div class="dropdown-menu" role="menu">
                                 <div class="user-info">
-                                    <div class="user-name">Túpac Amaru</div>
+                                    <div class="user-name">Admin</div>
                                     <div class="user-position online">Hoạt động</div>
                                 </div>
                                 <a class="dropdown-item" href="pages-profile.html"><span class="icon mdi mdi-face"></span>Thông tin tài khoản</a>
@@ -62,25 +62,25 @@
                                             <div class="content">
                                                 <ul>
                                                     <li class="notification notification-unread"><a href="#">
-                                                            <div class="image"><img src="assets\img\avatar2.png" alt="Avatar"></div>
+                                                            <div class="image"><img src="" alt="Avatar"></div>
                                                             <div class="notification-info">
                                                                 <div class="text"><span class="user-name">Jessica Caruso</span> accepted your invitation to join the team.</div><span class="date">2 min ago</span>
                                                             </div>
                                                         </a></li>
                                                     <li class="notification"><a href="#">
-                                                            <div class="image"><img src="assets\img\avatar3.png" alt="Avatar"></div>
+                                                            <div class="image"><img src="" alt="Avatar"></div>
                                                             <div class="notification-info">
                                                                 <div class="text"><span class="user-name">Joel King</span> is now following you</div><span class="date">2 days ago</span>
                                                             </div>
                                                         </a></li>
                                                     <li class="notification"><a href="#">
-                                                            <div class="image"><img src="assets\img\avatar4.png" alt="Avatar"></div>
+                                                            <div class="image"><img src="" alt="Avatar"></div>
                                                             <div class="notification-info">
                                                                 <div class="text"><span class="user-name">John Doe</span> is watching your main repository</div><span class="date">2 days ago</span>
                                                             </div>
                                                         </a></li>
                                                     <li class="notification"><a href="#">
-                                                            <div class="image"><img src="assets\img\avatar5.png" alt="Avatar"></div>
+                                                            <div class="image"><img src="" alt="Avatar"></div>
                                                             <div class="notification-info"><span class="text"><span class="user-name">Emily Carter</span> is now following you</span><span class="date">5 days ago</span></div>
                                                         </a></li>
                                                 </ul>
@@ -90,6 +90,11 @@
                                     <div class="footer"> <a href="#">Tất cả thông báo</a></div>
                                 </li>
                             </ul>
+                        </li>
+                    </ul>
+                    <ul class="nav navbar-nav float-right be-icons-nav">
+                        <li class="nav-item dropdown"><a class="nav-link dropdown-toggle" href="/" role="button" aria-expanded="false"><span class="icon mdi mdi-undo"></span></a>
+                           
                         </li>
                     </ul>
                 </div>
@@ -153,7 +158,7 @@
                                 </li>
                                 <li class="parent"><a href="#"><i class="icon mdi mdi-assignment"></i><span>SEO Page</span></a>
                                     <ul class="sub-menu">
-                                        
+
                                         <li><a href="{{route('seo')}}">Trang chủ</a>
                                         <li><a href="{{route('seo')}}">Sản phẩm</a>
                                         <li><a href="{{route('seo')}}">Giới thiệu</a>

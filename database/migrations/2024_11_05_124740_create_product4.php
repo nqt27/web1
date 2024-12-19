@@ -19,14 +19,14 @@ return new class extends Migration
             $table->string('name');
             $table->text('description');
             $table->string('image');
-            $table->decimal('price', 8, 2);
+            $table->decimal('price', 8, 2)->nullable();
             $table->decimal('pro-price', 8, 2)->default(true);
             $table->string('stock')->default(true);
             $table->boolean('display')->default(true);
             $table->boolean('new')->default(true);
             $table->boolean('discount')->default(true);
             $table->unsignedBigInteger('menu_id'); // Thêm cột khóa ngoại
-            $table->string('keyword_focus');
+            $table->string('keyword_focus')->nullable();
             $table->string('seo_title')->nullable();
             $table->string('seo_keywords')->nullable();
             $table->text('seo_description')->nullable();

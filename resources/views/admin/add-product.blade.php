@@ -357,7 +357,7 @@
     $(document).ready(function() {
         //-initialize the javascript
         urlProduct();
-        selectMenuProduct('{{$menu}}');
+        selectMenu('{{$menu}}');
         App.init();
         App.textEditors();
         $('form').parsley();

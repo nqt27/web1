@@ -241,7 +241,7 @@
                 var myDropzone = this;
 
                 // Thêm ảnh từ cơ sở dữ liệu (nếu có)
-                var existingImage = "{{ asset('images/' . $product->image) }}";
+                var existingImage = "{{ asset('uploads/images/' . $product->image) }}";
                 if (existingImage) {
                     var previewContainer = document.getElementById("custom-preview");
 
@@ -305,12 +305,13 @@
         var str = "{{$product->images}}";
 
         const cleanStr = str.replace(/&quot;/g, '"'); // Thay thế &quot; bằng dấu ngoặc kép "
+
         const array = JSON.parse(cleanStr);
 
         array.forEach(function(imageName) {
 
             // Lấy ảnh từ URL và tạo mock file từ dữ liệu
-            fetch("{{ asset('images') }}/" + imageName)
+            fetch("{{ asset('uploads/images') }}/" + imageName)
                 .then(response => response.blob())
                 .then(blob => {
                     const mockFile = new File([blob], imageName, blob);
@@ -318,7 +319,7 @@
                 });
 
 
-            console.log(myDropzone1);
+            // console.log(myDropzone1);
 
 
         });

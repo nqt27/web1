@@ -6,7 +6,8 @@ use App\Models\Menu;
 use Illuminate\Routing\Controller;
 use Illuminate\Http\Request;
 use App\Models\Products;
-use Illuminate\Support\Facades\Log;
+use Intervention\Image\Facades\Image;
+use Illuminate\Support\Facades\File;
 
 class ProductController extends Controller
 {
@@ -36,7 +37,7 @@ class ProductController extends Controller
             'url' => 'nullable|string|max:255',
             'name' => 'nullable|string|max:255',
             'description' => 'nullable|string',
-            'price' => 'nullable|numeric',
+            'price' => 'nullable|string',
             'menu_id' => 'required|integer|exists:menus,id',
             'keyword_focus' => 'nullable|string|max:255',
             'seo_title' => 'nullable|string|max:255',
@@ -48,44 +49,71 @@ class ProductController extends Controller
             'image' => 'nullable|file|mimes:jpeg,png,jpg,gif|max:2048',
             'images.*' => 'nullable|file|mimes:jpeg,png,jpg,gif|max:2048'
         ]);
+
         // Tạo sản phẩm mới
         $product = new Products();
+
+        // Đường dẫn logo watermark
+        $logoPath = public_path('uploads/images/logo.png');
+        $logo = Image::make($logoPath)
+            ->resize(100, 100, function ($constraint) {
+                $constraint->aspectRatio();
+                $constraint->upsize();
+            });
+
+        // Xử lý ảnh chính nếu có
+        if ($request->hasFile('image')) {
+            $image = $request->file('image');
+            $imageName = 'main_' . time() . '.' . $image->getClientOriginalExtension();
+            $imagePath = public_path('uploads/images/' . $imageName);
+
+            // Resize và đóng dấu logo
+            $img = Image::make($image)
+                ->resize(600, 600, function ($constraint) {
+                    $constraint->aspectRatio();
+                    $constraint->upsize();
+                })
+                ->insert($logo, 'top-right', 10, 10)
+                ->save($imagePath);
+
+            $product->image = $imageName;
+        }
+
         // Xử lý nhiều ảnh (images[]) nếu có
         $imagesArray = [];
         if ($request->hasFile('images')) {
             foreach ($request->file('images') as $file) {
-                $name = $file->getClientOriginalName();
-                $file->move(public_path('images'), $name);
-                $imagesArray[] = $name;
+                $imageName = 'sub_' . time() . '_' . $file->getClientOriginalName();
+                $imagePath = public_path('uploads/images/' . $imageName);
+
+                // Resize và đóng dấu logo
+                $img = Image::make($file)
+                    ->resize(600, 600, function ($constraint) {
+                        $constraint->aspectRatio();
+                        $constraint->upsize();
+                    })
+                    ->insert($logo, 'top-right', 10, 10)
+                    ->save($imagePath);
+
+                $imagesArray[] = $imageName;
             }
 
-            $product->filenames = $imagesArray;
+            $product->filenames = $imagesArray; // Lưu dưới dạng JSON
         }
 
-        // Lưu các dữ liệu cơ bản
-        if ($request->hasFile('image')) {
-            // Store the new image
-            $image = $request->file('image');
-            $avatarName = $image->getClientOriginalName();
-            $image->move(public_path('images'), $avatarName);
-
-            $product->image = $avatarName;
-        }
-
+        // Lưu các dữ liệu khác
         $product->url = $request->input('url');
         $product->name = $request->input('name');
         $product->description = $request->input('description');
         $product->price = $request->input('price');
-        $product->menu_id = $request->input('menu_id2');
+        $product->menu_id = $request->input('menu_id');
         $product->keyword_focus = $request->input('keyword_focus');
         $product->seo_title = $request->input('seo_title');
         $product->seo_keywords = $request->input('seo_keywords');
         $product->seo_description = $request->input('seo_description');
-        $product->display = $request->input('display');
-        $product->discount = $request->input('discount');
-        $product->new = $request->input('is_new');
-
-
+        $product->display = $request->boolean('display');
+        $product->discount = $request->boolean('discount');
+        $product->new = $request->boolean('is_new');
 
         // Lưu sản phẩm vào database
         $product->save();
@@ -93,12 +121,39 @@ class ProductController extends Controller
         return response()->json(['message' => 'Sản phẩm đã được thêm thành công']);
     }
     public function deleteAll(Request $request)
-    { // Lấy danh sách các ID từ yêu cầu
+    {
+        // Lấy danh sách các ID từ yêu cầu
         $ids = $request->input('ids');
 
         // Kiểm tra nếu có ID nào được chọn
         if (is_array($ids) && count($ids) > 0) {
-            // Xóa các mục theo ID
+            // Lấy danh sách sản phẩm theo ID
+            $products = Products::whereIn('id', $ids)->get();
+
+            foreach ($products as $product) {
+                // Xóa ảnh chính nếu có
+                if ($product->image) {
+                    $imagePath = public_path('uploads/images/' . $product->image);
+                    if (File::exists($imagePath)) {
+                        File::delete($imagePath);
+                    }
+                }
+
+                // Xóa ảnh phụ nếu có
+                if ($product->images) {
+                    $images = json_decode($product->images, true);
+                    if (is_array($images)) {
+                        foreach ($images as $image) {
+                            $imagePath = public_path('uploads/images/' . $image);
+                            if (File::exists($imagePath)) {
+                                File::delete($imagePath);
+                            }
+                        }
+                    }
+                }
+            }
+
+            // Xóa sản phẩm khỏi cơ sở dữ liệu
             Products::whereIn('id', $ids)->delete();
 
             return response()->json(['success' => 'Đã xóa thành công các mục đã chọn!']);
@@ -111,9 +166,34 @@ class ProductController extends Controller
     public function destroy($id)
     {
         // Tìm sản phẩm bằng ID
-        $news = Products::where('id', $id)->first();
+        $product = Products::where('id', $id)->first();
+        if (!$product) {
+            return response()->json(['message' => 'Sản phẩm không tồn tại'], 404);
+        }
+
+        // Xóa ảnh chính nếu có
+        if ($product->image) {
+            $imagePath = public_path('uploads/images/' . $product->image);
+            if (File::exists($imagePath)) {
+                File::delete($imagePath);
+            }
+        }
+
+        // Xóa các ảnh khác nếu có
+        if ($product->images) {
+            $images = json_decode($product->images, true); // Parse chuỗi JSON
+            if (is_array($images)) {
+                foreach ($images as $image) {
+                    $imagePath = public_path('uploads/images/' . $image);
+                    if (File::exists($imagePath)) {
+                        File::delete($imagePath);
+                    }
+                }
+            }
+        }
+
         // Xóa sản phẩm
-        $news->delete();
+        $product->delete();
 
         // Redirect lại trang danh sách sản phẩm với thông báo thành công
         return redirect()->route('product.index')->with('success', 'Product deleted successfully.');
@@ -163,31 +243,50 @@ class ProductController extends Controller
         ]);
         // Tạo sản phẩm mới
         $product = Products::findOrFail($id);
+        // Đường dẫn logo watermark
+        $logoPath = public_path('uploads/images/logo.png');
+        $logo = Image::make($logoPath)
+            ->resize(100, 100, function ($constraint) {
+                $constraint->aspectRatio();
+                $constraint->upsize();
+            });
         // Xóa dữ liệu cũ trong cột `images`
-        // $product->images = null; // Hoặc đặt về giá trị mặc định khác nếu cần
-        // $product->save();
         // Xử lý nhiều ảnh (images[]) nếu có
         $imagesArray = [];
         if ($request->hasFile('images')) {
             foreach ($request->file('images') as $file) {
-                $name = $file->getClientOriginalName();
-                $file->move(public_path('images'), $name);
-                $imagesArray[] = $name;
+                $imageName = 'sub_' . time() . '_' . $file->getClientOriginalName();
+                $imagePath = public_path('uploads/images/' . $imageName);
+                // Resize và đóng dấu logo
+                $img = Image::make($file)
+                    ->resize(600, 600, function ($constraint) {
+                        $constraint->aspectRatio();
+                        $constraint->upsize();
+                    })
+                    ->insert($logo, 'top-right', 10, 10)
+                    ->save($imagePath);
+                $imagesArray[] = $imageName;
             }
 
-            // $existingImages = json_decode($product->images);
-            // $updatedImages = array_merge($existingImages, $imagesArray);
-            $product->images = json_encode($imagesArray);
+            $product->images = $imagesArray;
         }
 
         // Lưu các dữ liệu cơ bản
         if ($request->hasFile('image')) {
             // Store the new image
             $image = $request->file('image');
-            $avatarName = $image->getClientOriginalName();
-            $image->move(public_path('images'), $avatarName);
+            $imageName = 'main_' . time() . '.' . $image->getClientOriginalExtension();
+            $imagePath = public_path('uploads/images/' . $imageName);
+            // Resize và đóng dấu logo
+            $img = Image::make($file)
+                ->resize(600, 600, function ($constraint) {
+                    $constraint->aspectRatio();
+                    $constraint->upsize();
+                })
+                ->insert($logo, 'top-right', 10, 10)
+                ->save($imagePath);
 
-            $product->image = $avatarName;
+            $product->image = $imageName;
         }
 
         $product->url = $request->input('url');
